@@ -1,0 +1,25 @@
+﻿@model TicTacToe_Game.Models.GameBoard
+
+<h2>Tic Tac Toe Game</h2>
+<p>Current Player: @Model.CurrentPlayer</p>
+<table>
+    @for (var row = 0; row < 3; row++)
+    {
+        <tr>
+            @for (var col = 0; col < 3; col++)
+            {
+                <td>
+                    @if (Model.Board[row, col] == '\0')
+                    {
+                        <a asp-action="MakeMove" asp-route-row="@row" asp-route-col="@col">@Model.Board[row, col]</a>
+                    }
+                    else
+                    {
+                        @Model.Board[row, col]
+                    }
+                </td>
+            }
+        </tr>
+    }
+</table>
+<p>Winner: @Model.Winner</p>
