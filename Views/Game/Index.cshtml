@@ -1,25 +1,46 @@
-﻿@model TicTacToe_Game.Models.GameBoard
+﻿@model TicTacToe_Game.Models.Game
 
-<h1>Tic Tac Toe Game</h1>
-<p>Current Player: @Model.CurrentPlayer</p>
-<table>
-    @for (var row = 0; row < 3; row++)
-    {
-        <tr>
-            @for (var col = 0; col < 3; col++)
-            {
-                <td>
-                    @if (Model.Board[row, col] == '\0')
-                    {
-                        <a asp-action="MakeMove" asp-route-row="@row" asp-route-col="@col">@Model.Board[row, col]</a>
-                    }
-                    else
-                    {
-                        @Model.Board[row, col]
-                    }
-                </td>
-            }
-        </tr>
-    }
-</table>
-<p>Winner: @Model.Winner</p>
+<h1>Tic Tac Toe</h1>
+
+<div>
+    <form asp-action="SetPlayerNames" method="post">
+        Player X: <input type="text" name="playerX" value="@Model.PlayerX" />
+        Player O: <input type="text" name="playerO" value="@Model.PlayerO" />
+        <button type="submit">Set Names</button>
+    </form>
+    <form asp-action="SetComputerPlayer" method="post">
+        <button type="submit" name="isComputerPlayer" value="@(Model.IsComputerPlayer ? "false" : "true")">
+            @(Model.IsComputerPlayer ? "Player vs Player" : "Player vs Computer")
+        </button>
+    </form>
+</div>
+
+<div>
+    <h3>@(Model.Winner == "Draw" ? "It's a Draw!" : Model.Winner == null ? $"Current player: {(Model.CurrentPlayer == "X" ? Model.PlayerX : Model.PlayerO)}" : $"Winner: {(Model.Winner == "X" ? Model.PlayerX : Model.PlayerO)}")</h3>
+    <table>
+        @for (int i = 0; i < 3; i++)
+        {
+            <tr>
+                @for (int j = 0; j < 3; j++)
+                {
+                    int position = i * 3 + j;
+                    <td>
+                        <form asp-action="MakeMove" method="post">
+                            <button type="submit" name="position" value="@position" @(Model.Board[position] != null || Model.Winner != null ? "disabled" : "")>@(Model.Board[position] ?? "-")</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+<div>
+    <form asp-action="Reset" method="post">
+        <button type="submit">Reset Game</button>
+    </form>
+    <form asp-action="ResetScores" method="post">
+        <button type="submit">Reset Scores</button>
+    </form>
+    <p>Score: @Model.PlayerX (@Model.ScoreX) - @Model.PlayerO (@Model.ScoreO)</p>
+</div>
